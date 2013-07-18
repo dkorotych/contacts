@@ -93,4 +93,8 @@ public class Contact {
         return lastName + " " + firstName;
     }
 
+    public String getFormattedPhone() {
+        return "+" + phone;
+    }
+
 }

@@ -79,7 +79,7 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         ops.add(addField(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.NUMBER,
-                addedContact.getPhone()));
+                addedContact.getFormattedPhone()));
         ops.add(addField(
                 ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Organization.COMPANY,
@@ -121,28 +121,21 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
 
     private static ContentProviderOperation createContact(Account account,
             String id) {
-        ContentProviderOperation.Builder builder = ContentProviderOperation
-                .newInsert(RawContacts.CONTENT_URI);
-
-        builder.withValue(RawContacts.ACCOUNT_NAME, account.name);
-        builder.withValue(RawContacts.ACCOUNT_TYPE, account.type);
-        builder.withValue(RawContacts.SYNC1, id);
-
-        return builder.build();
+        return ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
+                .withValue(RawContacts.ACCOUNT_NAME, account.name)
+                .withValue(RawContacts.ACCOUNT_TYPE, account.type)
+                .withValue(RawContacts.SYNC1, id).build();
     }
 
     private static ContentProviderOperation addField(String type, String key,
             String value) {
-        ContentProviderOperation.Builder builder = ContentProviderOperation
-                .newInsert(ContactsContract.Data.CONTENT_URI);
-
-        builder.withValueBackReference(
-                ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID,
-                0);
-        builder.withValue(ContactsContract.Data.MIMETYPE, type);
-        builder.withValue(key, value);
-
-        return builder.build();
+        return ContentProviderOperation
+                .newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValue(ContactsContract.Data.MIMETYPE, type)
+                .withValue(key, value)
+                .withValueBackReference(
+                        ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID,
+                        0).build();
     }
 
 }
