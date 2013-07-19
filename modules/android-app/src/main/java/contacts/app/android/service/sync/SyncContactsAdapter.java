@@ -40,6 +40,8 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
 
     private ContentResolver contentResolver;
 
+    private volatile boolean syncCanceled;
+
     public SyncContactsAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
 
@@ -48,19 +50,38 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
     }
 
     @Override
+    public void onSyncCanceled() {
+        Log.d(TAG, "Sync canceled.");
+        syncCanceled = true;
+        super.onSyncCanceled();
+    }
+
+    @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
             ContentProviderClient provider, SyncResult syncResult) {
+        Log.d(TAG, "Sync started.");
+        syncCanceled = false;
+
         try {
             String groupTitle = getContext().getString(R.string.groupCoworkers);
             String groupId = findGroup(account, groupTitle);
+            if (syncCanceled) {
+                return;
+            }
 
             List<Contact> contacts = contactsRepository.findByLocation(account);
+            if (syncCanceled) {
+                return;
+            }
+
             addContacts(account, groupId, contacts);
         } catch (RepositoryException exception) {
             Log.e(TAG, "Repository is not accessible.", exception);
         } catch (SyncException exception) {
             Log.e(TAG, "Sync could not be completed.", exception);
         }
+
+        Log.d(TAG, "Sync finished.");
     }
 
     private String findGroup(Account account, String title)
@@ -118,6 +139,10 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         Set<String> knownContacts = getKnownContacts(account);
 
         for (Contact contact : contacts) {
+            if (syncCanceled) {
+                return;
+            }
+
             String userName = contact.getUserName();
             if (knownContacts.contains(userName)) {
                 Log.d(TAG, format("Contact for {0} already exists.", userName));

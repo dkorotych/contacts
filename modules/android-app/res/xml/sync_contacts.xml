@@ -4,4 +4,5 @@
 
     android:accountType="@string/accountType"
     android:contentAuthority="com.android.contacts"
-    android:supportsUploading="false" />
+    android:supportsUploading="false"
+    android:allowParallelSyncs="false" />
