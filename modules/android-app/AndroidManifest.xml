@@ -45,7 +45,7 @@
 
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/add_account" />
+                android:resource="@xml/authenticator" />
         </service>
         <service
             android:name="contacts.app.android.service.sync.SyncContactsService"

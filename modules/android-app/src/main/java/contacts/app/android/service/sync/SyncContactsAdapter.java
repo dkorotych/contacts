@@ -11,6 +11,7 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.SyncResult;
@@ -35,10 +36,13 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
 
     private ContactsRepository contactsRepository;
 
+    private ContentResolver contentResolver;
+
     public SyncContactsAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
 
         contactsRepository = new ContactsRepositoryRest(context);
+        contentResolver = context.getContentResolver();
     }
 
     @Override
@@ -59,13 +63,13 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
 
     private String findGroup(Account account, String title)
             throws SyncException {
-        Cursor cursor = getContext().getContentResolver().query(
-                ContactsContract.Groups.CONTENT_URI,
-                new String[] { ContactsContract.Groups._ID,
-                        ContactsContract.Groups.TITLE },
-                ContactsContract.Groups.TITLE + "=? and "
-                        + ContactsContract.Groups.ACCOUNT_NAME + "=? and "
-                        + ContactsContract.Groups.ACCOUNT_TYPE + "=?",
+        String[] projection = new String[] { ContactsContract.Groups._ID,
+                ContactsContract.Groups.TITLE };
+        String selection = ContactsContract.Groups.TITLE + "=? and "
+                + ContactsContract.Groups.ACCOUNT_NAME + "=? and "
+                + ContactsContract.Groups.ACCOUNT_TYPE + "=?";
+        Cursor cursor = contentResolver.query(
+                ContactsContract.Groups.CONTENT_URI, projection, selection,
                 new String[] { title, account.name, account.type }, null);
 
         try {
@@ -96,8 +100,8 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
                 .withValue(ContactsContract.Groups.GROUP_VISIBLE, 1).build());
 
         try {
-            ContentProviderResult[] results = getContext().getContentResolver()
-                    .applyBatch(ContactsContract.AUTHORITY, ops);
+            ContentProviderResult[] results = contentResolver.applyBatch(
+                    ContactsContract.AUTHORITY, ops);
             String id = Long.toString(ContentUris.parseId(results[0].uri));
             Log.d(TAG, "Group " + id + " was created.");
             return id;
@@ -166,8 +170,7 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
                 groupId));
 
         try {
-            getContext().getContentResolver().applyBatch(
-                    ContactsContract.AUTHORITY, ops);
+            contentResolver.applyBatch(ContactsContract.AUTHORITY, ops);
         } catch (Exception exception) {
             Log.e(TAG, "Can't add contact for " + userName + ".", exception);
         }
@@ -176,13 +179,14 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
     private Set<String> getKnownContacts(Account account) {
         Set<String> knownContacts = new HashSet<String>();
 
-        Uri contactsUri = RawContacts.CONTENT_URI.buildUpon()
+        Uri uri = RawContacts.CONTENT_URI.buildUpon()
                 .appendQueryParameter(RawContacts.ACCOUNT_NAME, account.name)
                 .appendQueryParameter(RawContacts.ACCOUNT_TYPE, account.type)
                 .build();
 
-        Cursor cursor = getContext().getContentResolver().query(contactsUri,
-                new String[] { RawContacts.SYNC1 }, null, null, null);
+        String[] projection = new String[] { RawContacts.SYNC1 };
+        Cursor cursor = contentResolver
+                .query(uri, projection, null, null, null);
 
         try {
             if (cursor.getCount() == 0) {
