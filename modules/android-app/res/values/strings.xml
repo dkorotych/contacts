@@ -8,5 +8,6 @@
     <string name="labelName">Name</string>
     <string name="labelPassword">Password</string>
     <string name="labelAdd">Add</string>
-    
+    <string name="groupCoworkers">Coworkers</string>
+
 </resources>

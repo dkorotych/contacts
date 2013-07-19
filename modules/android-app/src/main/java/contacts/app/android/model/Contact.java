@@ -89,10 +89,6 @@ public class Contact {
         this.location = location;
     }
 
-    public String getDisplayName() {
-        return lastName + " " + firstName;
-    }
-
     public String getFormattedPhone() {
         return "+" + phone;
     }
