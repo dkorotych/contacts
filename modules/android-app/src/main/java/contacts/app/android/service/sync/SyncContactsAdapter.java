@@ -1,5 +1,7 @@
 package contacts.app.android.service.sync;
 
+import static java.text.MessageFormat.format;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,7 +34,7 @@ import contacts.app.android.repository.RepositoryException;
  */
 public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
 
-    private static final String TAG = "Sync Contacts";
+    private static final String TAG = SyncContactsAdapter.class.getName();
 
     private ContactsRepository contactsRepository;
 
@@ -74,14 +76,14 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             if (cursor.getCount() <= 0) {
-                Log.d(TAG, "Group " + title + " not found.");
+                Log.d(TAG, format("Group {0} not found.", title));
                 return createGroup(account, title);
             }
 
             cursor.moveToNext();
             String id = cursor.getString(cursor
                     .getColumnIndex(ContactsContract.Groups._ID));
-            Log.d(TAG, "Group " + id + " was found.");
+            Log.d(TAG, format("Group {0} with id {1} was found.", title, id));
             return id;
         } finally {
             cursor.close();
@@ -103,10 +105,10 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
             ContentProviderResult[] results = contentResolver.applyBatch(
                     ContactsContract.AUTHORITY, ops);
             String id = Long.toString(ContentUris.parseId(results[0].uri));
-            Log.d(TAG, "Group " + id + " was created.");
+            Log.d(TAG, format("Group {0} with id {1} was created.", title, id));
             return id;
         } catch (Exception exception) {
-            Log.e(TAG, "Can't create group for contacts.", exception);
+            Log.e(TAG, format("Can not create group {0}.", title), exception);
             throw new SyncException();
         }
     }
@@ -118,7 +120,7 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         for (Contact contact : contacts) {
             String userName = contact.getUserName();
             if (knownContacts.contains(userName)) {
-                Log.d(TAG, "Contact for user " + userName + " already exists.");
+                Log.d(TAG, format("Contact for {0} already exists.", userName));
                 continue;
             }
 
@@ -129,7 +131,7 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
     private void addContact(Account account, String groupId, Contact contact) {
         String userName = contact.getUserName();
 
-        Log.d(TAG, "Add contact for " + userName);
+        Log.d(TAG, format("Add contact for {0}.", userName));
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         ops.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
@@ -172,7 +174,8 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         try {
             contentResolver.applyBatch(ContactsContract.AUTHORITY, ops);
         } catch (Exception exception) {
-            Log.e(TAG, "Can't add contact for " + userName + ".", exception);
+            Log.w(TAG, format("Can not add contact for {0}.", userName),
+                    exception);
         }
     }
 
@@ -198,7 +201,7 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
                 knownContacts.add(cursor.getString(0));
             }
 
-            Log.d(TAG, "Found " + knownContacts.size() + " known contacts.");
+            Log.d(TAG, format("Found {0} contacts.", knownContacts.size()));
             return knownContacts;
         } finally {
             cursor.close();
