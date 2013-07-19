@@ -52,9 +52,8 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
 
         String name = nameInput.getText().toString();
         if (StringUtils.isNullOrEmpty(name)) {
-            Toast toast = Toast.makeText(context, R.string.accountNameEmpty,
-                    Toast.LENGTH_SHORT);
-            toast.show();
+            Toast.makeText(context, R.string.accountNameEmpty,
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -63,18 +62,16 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
         for (Account account : accounts) {
             if (name.equals(account.name)) {
                 Log.d(TAG, format("Account for {0} already exists.", name));
-                Toast toast = Toast.makeText(context,
-                        R.string.accountAlreadyExists, Toast.LENGTH_SHORT);
-                toast.show();
+                Toast.makeText(context, R.string.accountAlreadyExists,
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
         }
 
         String password = passwordInput.getText().toString();
         if (StringUtils.isNullOrEmpty(password)) {
-            Toast toast = Toast.makeText(context,
-                    R.string.accountPasswordEmpty, Toast.LENGTH_SHORT);
-            toast.show();
+            Toast.makeText(context, R.string.accountPasswordEmpty,
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -85,9 +82,8 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
                 null);
         if (!accountAdded) {
             Log.d(TAG, format("Account for {0} was not created.", name));
-            Toast toast = Toast.makeText(context,
-                    R.string.accountInvalidCredentials, Toast.LENGTH_SHORT);
-            toast.show();
+            Toast.makeText(context, R.string.accountInvalidCredentials,
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
