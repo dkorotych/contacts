@@ -4,10 +4,14 @@
     <string name="appName">Corporate Contacts</string>
     <string name="accountName">Corporate Contacts</string>
     <string name="accountType">corporate.contacts</string>
-    <string name="searchUrl">https://office-tools.donetsk.exadel.com/contacts/search.json</string>
-    <string name="labelName">Name</string>
-    <string name="labelPassword">Password</string>
-    <string name="labelAdd">Add</string>
+
+    <string name="searchUrl">https://office-tools.donetsk.exadel.com/contacts/search.json
+    </string>
+
+    <string name="hintForName">Name</string>
+    <string name="hintForPassword">Password</string>
+    <string name="actionSignIn">Sign In</string>
+
     <string name="groupCoworkers">Coworkers</string>
 
 </resources>

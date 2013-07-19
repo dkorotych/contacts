@@ -25,14 +25,14 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.auth_login);
+        setContentView(R.layout.add_account_layout);
 
         accountType = getString(R.string.accountType);
 
         usernameInput = (EditText) findViewById(R.id.username);
         passwordInput = (EditText) findViewById(R.id.password);
 
-        loginButton = (Button) findViewById(R.id.login);
+        loginButton = (Button) findViewById(R.id.signIn);
         loginButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View view) {
