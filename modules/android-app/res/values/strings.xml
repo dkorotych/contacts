@@ -5,9 +5,6 @@
     <string name="accountName">Corporate Contacts</string>
     <string name="accountType">corporate.contacts</string>
 
-    <string name="searchUrl">https://office-tools.donetsk.exadel.com/contacts/search.json
-    </string>
-
     <string name="hintForName">Name</string>
     <string name="hintForPassword">Password</string>
     <string name="actionSignIn">Sign In</string>

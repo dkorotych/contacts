@@ -1,5 +1,7 @@
 package contacts.app.android.repository;
 
+import static java.text.MessageFormat.format;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.util.Base64;
+import android.util.Log;
 import contacts.app.android.R;
 import contacts.app.android.model.Contact;
 
@@ -25,6 +28,8 @@ import contacts.app.android.model.Contact;
  * Remote repository that provides access through REST.
  */
 public class ContactsRepositoryRest implements ContactsRepository {
+
+    private static final String TAG = ContactsRepositoryRest.class.getName();
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -36,41 +41,18 @@ public class ContactsRepositoryRest implements ContactsRepository {
 
     public List<Contact> findByLocation(Account account)
             throws RepositoryException {
-        HttpGet request = new HttpGet();
-        String authHeader = createAuthHeader(account);
-        request.setHeader(AUTHORIZATION_HEADER, authHeader);
-        request.setURI(createUri(context.getString(R.string.searchUrl)));
-
-        String json = sendRequest(request);
+        String searchPath = context.getString(R.string.restSearchContacts);
+        String data = getData(account, searchPath);
 
         try {
-            return parseContacts(json);
-        } catch (JSONException e) {
-            throw new RepositoryException();
+            return parseContacts(data);
+        } catch (JSONException exception) {
+            throw new RepositoryException("Data is invalid.", exception);
         }
     }
 
-    private String createAuthHeader(Account account) {
-        AccountManager accountManager = AccountManager.get(context);
-        String username = account.name;
-        String password = accountManager.getPassword(account);
-
-        String credentials = username + ":" + password;
-        String base64 = new String(Base64.encode(credentials.getBytes(),
-                Base64.NO_WRAP));
-        return "Basic " + base64;
-    }
-
-    private URI createUri(String url) throws RepositoryException {
-        try {
-            return new URI(url);
-        } catch (URISyntaxException e) {
-            throw new RepositoryException();
-        }
-    }
-
-    private List<Contact> parseContacts(String json) throws JSONException {
-        JSONArray jsonContacts = new JSONArray(json);
+    private List<Contact> parseContacts(String data) throws JSONException {
+        JSONArray jsonContacts = new JSONArray(data);
         List<Contact> contacts = new ArrayList<Contact>();
         for (int i = 0; i < jsonContacts.length(); ++i) {
             JSONObject jsonContact = jsonContacts.getJSONObject(i);
@@ -79,14 +61,44 @@ public class ContactsRepositoryRest implements ContactsRepository {
         return contacts;
     }
 
-    private String sendRequest(HttpGet request) throws RepositoryException {
+    private String getData(Account account, String relativePath)
+            throws RepositoryException {
+        HttpGet request = new HttpGet();
+        String authHeader = createAuthHeader(account);
+        request.setHeader(AUTHORIZATION_HEADER, authHeader);
+        URI uri = resolveUri(relativePath);
+        request.setURI(uri);
+
+        Log.d(TAG, format("Get data from {0}.", uri.toString()));
+
         HttpClient client = new DefaultHttpClient();
         try {
             HttpResponse response = client.execute(request);
             return EntityUtils.toString(response.getEntity());
         } catch (Exception exception) {
-            throw new RepositoryException();
+            Log.e(TAG, "Repository not accessible.");
+            throw new RepositoryException("Data not accessible.", exception);
         }
+    }
+
+    private URI resolveUri(String relativePath) throws RepositoryException {
+        try {
+            URI base = new URI(context.getString(R.string.restBase));
+            return base.resolve(relativePath);
+        } catch (URISyntaxException exception) {
+            throw new RepositoryException("URI is invalid.", exception);
+        }
+    }
+
+    private String createAuthHeader(Account account) {
+        AccountManager manager = AccountManager.get(context);
+        String username = account.name;
+        String password = manager.getPassword(account);
+
+        String credentials = username + ":" + password;
+        String base64 = new String(Base64.encode(credentials.getBytes(),
+                Base64.NO_WRAP));
+        return "Basic " + base64;
     }
 
 }
