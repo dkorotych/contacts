@@ -1,5 +1,6 @@
 package contacts.app.android.service.sync;
 
+import static java.lang.Thread.currentThread;
 import static java.text.MessageFormat.format;
 
 import java.util.ArrayList;
@@ -40,8 +41,6 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
 
     private ContentResolver contentResolver;
 
-    private volatile boolean syncCanceled;
-
     public SyncContactsAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
 
@@ -50,27 +49,23 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
     }
 
     @Override
-    public void onSyncCanceled() {
-        Log.d(TAG, "Sync canceled.");
-        syncCanceled = true;
-        super.onSyncCanceled();
-    }
-
-    @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
             ContentProviderClient provider, SyncResult syncResult) {
         Log.d(TAG, "Sync started.");
-        syncCanceled = false;
 
         try {
             String groupTitle = getContext().getString(R.string.groupCoworkers);
             String groupId = findGroup(account, groupTitle);
-            if (syncCanceled) {
+
+            if (isCanceled()) {
                 return;
             }
 
             List<Contact> contacts = contactsRepository.findByLocation(account);
-            if (syncCanceled) {
+            Log.d(TAG,
+                    format("Found {0} contacts in repository.", contacts.size()));
+
+            if (isCanceled()) {
                 return;
             }
 
@@ -139,11 +134,12 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         Set<String> knownContacts = getKnownContacts(account);
 
         for (Contact contact : contacts) {
-            if (syncCanceled) {
+            String userName = contact.getUserName();
+            Log.d(TAG, format("Sync contact for {0}.", userName));
+            if (isCanceled()) {
                 return;
             }
 
-            String userName = contact.getUserName();
             if (knownContacts.contains(userName)) {
                 Log.d(TAG, format("Contact for {0} already exists.", userName));
                 continue;
@@ -205,8 +201,6 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private Set<String> getKnownContacts(Account account) {
-        Set<String> knownContacts = new HashSet<String>();
-
         Uri uri = RawContacts.CONTENT_URI.buildUpon()
                 .appendQueryParameter(RawContacts.ACCOUNT_NAME, account.name)
                 .appendQueryParameter(RawContacts.ACCOUNT_TYPE, account.type)
@@ -217,16 +211,19 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
                 .query(uri, projection, null, null, null);
 
         try {
-            if (cursor.getCount() == 0) {
+            int contactsNum = cursor.getCount();
+            Log.d(TAG,
+                    format("Found {0} contacts in address book.", contactsNum));
+            if (contactsNum == 0) {
                 return Collections.emptySet();
             }
 
-            for (int i = 0; i < cursor.getCount(); ++i) {
+            Set<String> knownContacts = new HashSet<String>(contactsNum);
+            for (int i = 0; i < contactsNum; ++i) {
                 cursor.moveToNext();
                 knownContacts.add(cursor.getString(0));
             }
 
-            Log.d(TAG, format("Found {0} contacts.", knownContacts.size()));
             return knownContacts;
         } finally {
             cursor.close();
@@ -242,6 +239,18 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
                 .withValueBackReference(
                         ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID,
                         0).build();
+    }
+
+    /**
+     * Checks, that synchronization is canceled.
+     */
+    private boolean isCanceled() {
+        boolean canceled = currentThread().isInterrupted();
+        if (canceled) {
+            Log.d(TAG, "Sync canceled.");
+        }
+
+        return canceled;
     }
 
 }
