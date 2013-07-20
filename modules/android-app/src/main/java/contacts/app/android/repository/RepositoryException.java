@@ -1,5 +1,8 @@
 package contacts.app.android.repository;
 
+/**
+ * Thrown if repository is not accessible.
+ */
 public class RepositoryException extends Exception {
 
     private static final long serialVersionUID = 8362529010456561200L;

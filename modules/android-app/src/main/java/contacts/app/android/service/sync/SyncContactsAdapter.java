@@ -125,7 +125,7 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
             return id;
         } catch (Exception exception) {
             Log.e(TAG, format("Can not create group {0}.", title), exception);
-            throw new SyncException();
+            throw new SyncException("Group not created.", exception);
         }
     }
 
@@ -145,11 +145,16 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
                 continue;
             }
 
-            addContact(account, groupId, contact);
+            try {
+                addContact(account, groupId, contact);
+            } catch (SyncException exception) {
+                Log.d(TAG, format("Contact for {0} skipped.", userName));
+            }
         }
     }
 
-    private void addContact(Account account, String groupId, Contact contact) {
+    private void addContact(Account account, String groupId, Contact contact)
+            throws SyncException {
         String userName = contact.getUserName();
 
         Log.d(TAG, format("Add contact for {0}.", userName));
@@ -197,6 +202,7 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         } catch (Exception exception) {
             Log.w(TAG, format("Can not add contact for {0}.", userName),
                     exception);
+            throw new SyncException("Contact not added.", exception);
         }
     }
 
