@@ -5,6 +5,10 @@ import org.json.JSONObject;
 
 /**
  * Contact for single person.
+ * 
+ * <p>
+ * The user name of person is treated as unique identifier. Therefore, if two
+ * contacts have the same user name it means that they belong to one person.
  */
 public class Contact {
 
@@ -89,6 +93,9 @@ public class Contact {
         this.location = location;
     }
 
+    /**
+     * Formats phone number according to requirements of address book.
+     */
     public String getFormattedPhone() {
         return "+" + phone;
     }

@@ -32,6 +32,9 @@ import contacts.app.android.repository.RepositoryException;
 
 /**
  * Synchronizes contacts.
+ * 
+ * <p>
+ * If user cancels synchronization, then process will be safely interrupted.
  */
 public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
 
@@ -61,7 +64,7 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
                 return;
             }
 
-            List<Contact> contacts = contactsRepository.findByLocation(account);
+            List<Contact> contacts = contactsRepository.findByOffice(account);
             Log.d(TAG,
                     format("Found {0} contacts in repository.", contacts.size()));
 
@@ -79,6 +82,12 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         Log.d(TAG, "Sync finished.");
     }
 
+    /**
+     * Finds group for contacts and returns its identifier.
+     * 
+     * <p>
+     * If group was not found, then tries to create a new group.
+     */
     private String findGroup(Account account, String title)
             throws SyncException {
         String[] projection = new String[] { ContactsContract.Groups._ID,
@@ -106,6 +115,12 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Creates a group with the given title and returns its identifier.
+     * 
+     * <p>
+     * If group can not be created, then synchronization should be stopped.
+     */
     private String createGroup(Account account, String title)
             throws SyncException {
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
@@ -129,6 +144,12 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Adds all contacts from list to the given group.
+     * 
+     * <p>
+     * If contact already exists, then it will not be changed.
+     */
     private void addContacts(Account account, String groupId,
             List<Contact> contacts) {
         Set<String> knownContacts = getKnownContacts(account);
@@ -153,6 +174,9 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Adds a contact into specified group.
+     */
     private void addContact(Account account, String groupId, Contact contact)
             throws SyncException {
         String userName = contact.getUserName();
@@ -190,7 +214,7 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
                 contact.getFormattedPhone()));
         ops.add(addContactData(
                 ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
-                ContactsContract.CommonDataKinds.Organization.DEPARTMENT,
+                ContactsContract.CommonDataKinds.Organization.OFFICE_LOCATION,
                 contact.getLocation()));
         ops.add(addContactData(
                 ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE,
@@ -206,6 +230,9 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Returns set of contacts, that are already added to group.
+     */
     private Set<String> getKnownContacts(Account account) {
         Uri uri = RawContacts.CONTENT_URI.buildUpon()
                 .appendQueryParameter(RawContacts.ACCOUNT_NAME, account.name)

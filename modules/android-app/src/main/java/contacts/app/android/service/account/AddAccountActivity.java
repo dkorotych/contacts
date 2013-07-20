@@ -16,7 +16,11 @@ import contacts.app.android.R;
 import contacts.app.android.util.StringUtils;
 
 /**
- * Allows user create an account.
+ * Allows create a new user account.
+ * 
+ * <p>
+ * When user account is created we store password as is. Maybe, we should think
+ * about using of tokens.
  */
 public class AddAccountActivity extends AccountAuthenticatorActivity {
 
@@ -45,11 +49,20 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
         });
     }
 
+    /**
+     * Creates new account.
+     * 
+     * <p>
+     * Accounts are differ by user name.
+     */
     private void createAccount(View view) {
         Context context = view.getContext();
 
         String accountType = getString(R.string.accountType);
 
+        /*
+         * Checks that user has entered name.
+         */
         String name = nameInput.getText().toString();
         if (StringUtils.isNullOrEmpty(name)) {
             Toast.makeText(context, R.string.accountNameEmpty,
@@ -57,6 +70,9 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
             return;
         }
 
+        /*
+         * Checks that user account with the same name not exists.
+         */
         AccountManager manager = AccountManager.get(context);
         Account[] accounts = manager.getAccountsByType(accountType);
         for (Account account : accounts) {
@@ -68,6 +84,9 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
             }
         }
 
+        /*
+         * Checks that user has entered password.
+         */
         String password = passwordInput.getText().toString();
         if (StringUtils.isNullOrEmpty(password)) {
             Toast.makeText(context, R.string.accountPasswordEmpty,
@@ -77,6 +96,9 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
 
         Log.d(TAG, format("Create account for {0}.", name));
 
+        /*
+         * Creates new user account with given credentials.
+         */
         Account account = new Account(name, accountType);
         boolean accountAdded = manager.addAccountExplicitly(account, password,
                 null);

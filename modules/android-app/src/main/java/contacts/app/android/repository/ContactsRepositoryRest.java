@@ -39,7 +39,7 @@ public class ContactsRepositoryRest implements ContactsRepository {
         this.context = context;
     }
 
-    public List<Contact> findByLocation(Account account)
+    public List<Contact> findByOffice(Account account)
             throws RepositoryException {
         String searchPath = context.getString(R.string.restSearchContacts);
         String data = getData(account, searchPath);
@@ -51,6 +51,9 @@ public class ContactsRepositoryRest implements ContactsRepository {
         }
     }
 
+    /**
+     * Parses JSON and creates a list of contacts.
+     */
     private List<Contact> parseContacts(String data) throws JSONException {
         JSONArray jsonContacts = new JSONArray(data);
         List<Contact> contacts = new ArrayList<Contact>();
@@ -61,6 +64,19 @@ public class ContactsRepositoryRest implements ContactsRepository {
         return contacts;
     }
 
+    /**
+     * Gets data from REST service.
+     * 
+     * @param account
+     *            the user account.
+     * @param relativePath
+     *            the relative path for REST-service.
+     * 
+     * @return the retrieved data.
+     * 
+     * @throws RepositoryException
+     *             the data could not be retrieved from REST-service.
+     */
     private String getData(Account account, String relativePath)
             throws RepositoryException {
         HttpGet request = new HttpGet();
@@ -81,6 +97,17 @@ public class ContactsRepositoryRest implements ContactsRepository {
         }
     }
 
+    /**
+     * Resolves URI of REST service.
+     * 
+     * @param relativePath
+     *            the relative path for REST-service.
+     * 
+     * @return the URI to access REST-service.
+     * 
+     * @throws RepositoryException
+     *             URI could not be resolved.
+     */
     private URI resolveUri(String relativePath) throws RepositoryException {
         try {
             URI base = new URI(context.getString(R.string.restBase));
@@ -90,6 +117,15 @@ public class ContactsRepositoryRest implements ContactsRepository {
         }
     }
 
+    /**
+     * Creates header for basic authentication.
+     * 
+     * @param account
+     *            the user account, that contains credentials for basic
+     *            authentication.
+     * 
+     * @return the created header.
+     */
     private String createAuthHeader(Account account) {
         AccountManager manager = AccountManager.get(context);
         String username = account.name;

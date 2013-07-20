@@ -11,8 +11,8 @@ import contacts.app.android.model.Contact;
 public interface ContactsRepository {
 
     /**
-     * Finds contacts of people in location of user.
+     * Finds contacts of people from the same office with user.
      */
-    List<Contact> findByLocation(Account account) throws RepositoryException;
+    List<Contact> findByOffice(Account account) throws RepositoryException;
 
 }

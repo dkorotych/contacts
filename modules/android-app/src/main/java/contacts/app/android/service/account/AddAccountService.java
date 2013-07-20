@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 /**
- * Adds new account.
+ * Service for adding of new user accounts.
  */
 public class AddAccountService extends Service {
 
