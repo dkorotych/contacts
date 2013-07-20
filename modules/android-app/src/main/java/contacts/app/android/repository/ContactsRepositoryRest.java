@@ -42,7 +42,7 @@ public class ContactsRepositoryRest implements ContactsRepository {
     public List<Contact> findByOffice(Account account)
             throws RepositoryException {
         String searchPath = context.getString(R.string.restSearchContacts);
-        String data = getData(account, searchPath);
+        String data = doGet(account, searchPath);
 
         try {
             return parseContacts(data);
@@ -65,7 +65,7 @@ public class ContactsRepositoryRest implements ContactsRepository {
     }
 
     /**
-     * Gets data from REST service.
+     * Performs GET request to REST-service.
      * 
      * @param account
      *            the user account.
@@ -77,7 +77,7 @@ public class ContactsRepositoryRest implements ContactsRepository {
      * @throws RepositoryException
      *             the data could not be retrieved from REST-service.
      */
-    private String getData(Account account, String relativePath)
+    private String doGet(Account account, String relativePath)
             throws RepositoryException {
         HttpGet request = new HttpGet();
         String authHeader = createAuthHeader(account);
