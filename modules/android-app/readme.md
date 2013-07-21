@@ -1,4 +1,21 @@
-## Getting Started
+## Build and Deploy
+
+To work on this project you can use these tools: [Git][tool:git], [Maven][tool:maven], [Eclipse][tool:eclipse], [Android Configurator for Eclipse][tool:android.m2e] and [Android SDK Tools][tool:android.sdk].
+
+To build application using Maven, follow next steps:
+
+1. Install Android SDK and update it.
+1. Build project using command `mvn clean package`.
+1. Deploy application using command `mvn android:deploy`.
+
+To work with application in IDE, follow next steps:
+
+1. Install Eclipse.
+1. Install Android Configurator fo Eclipse.
+1. Import project into eclipse using `File > Import > Maven > Existing Maven Projects`.
+1. Run applciation using `Run > Run As > Android Application`.
+
+## Run on Device
 
 1. Install application.
 1. Go to `Settings > Accounts > Add Account`.
@@ -8,3 +25,9 @@
 1. Go to `Settings > Accounts > Corporate Contacts`.
 1. Run synchronization.
 1. Wait until sync is completed.
+
+[tool:git]: http://git-scm.com/
+[tool:maven]: http://maven.apache.org/
+[tool:eclipse]: http://www.eclipse.org/
+[tool:android.m2e]: http://rgladwell.github.io/m2e-android/
+[tool:android.sdk]: http://developer.android.com/sdk/
