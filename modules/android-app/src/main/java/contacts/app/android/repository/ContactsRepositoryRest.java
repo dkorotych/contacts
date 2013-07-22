@@ -92,8 +92,7 @@ public class ContactsRepositoryRest implements ContactsRepository {
             HttpResponse response = client.execute(request);
             return EntityUtils.toString(response.getEntity());
         } catch (Exception exception) {
-            Log.e(TAG, "Repository not accessible.");
-            throw new RepositoryException("Data not accessible.", exception);
+            throw new RepositoryException("Data is not accessible.", exception);
         }
     }
 
