@@ -70,8 +70,4 @@ public class Contact implements Serializable {
         this.location = location;
     }
 
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
-
 }
