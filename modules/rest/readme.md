@@ -10,7 +10,13 @@ This module is based on [Spring][framework:spring] framework.
 
 ## Tools
 
-To work on this project you can use these tools: [Git][tool:git], [Maven][tool:maven], [Eclipse][tool:eclipse], [Tomcat][tool:tomcat] and [Open DJ][tool:opendj].
+To work on this project you can use: [Git][tool:git], [Maven][tool:maven], [Eclipse][tool:eclipse], [Tomcat][tool:tomcat] and [Open DJ][tool:opendj].
+
+## Getting Started
+
+1. Install and configure local directory service (for example, [Open DJ][tool:opendj]). File [test.ldif](https://github.com/grytsenko/contacts/blob/master/modules/rest/config/test.ldif) contains test data for directory service.
+1. Build module and deploy it on web server.
+1. Open `http://localhost:8080/contacts/search.json` in browser and enter user name and password for authentication.
 
 [framework:spring]: http://www.springsource.org/
 
