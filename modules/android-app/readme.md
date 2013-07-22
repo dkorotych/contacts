@@ -5,6 +5,7 @@ To work on this project you can use these tools: [Git][tool:git], [Maven][tool:m
 To build application using Maven, follow next steps:
 
 1. Install Android SDK and update it.
+1. Create environment variable `ANDROID_HOME`, which points to directory, that contains Android SDK.
 1. Build project using command `mvn clean package`.
 1. Deploy application using command `mvn android:deploy`.
 
