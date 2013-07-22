@@ -1,3 +1,5 @@
+## Summary
+
 Directory services are widely used to store information about employees.
 Generally it means that we can use this service to retrieve information about contacts, for example, for co-workers.
 
@@ -12,3 +14,9 @@ The first part is a web application that allows access to directory service thro
 The second part is a native application for phone, that uses web application to access information about contacts.
 
 [image:design]: https://github.com/grytsenko/contacts/blob/master/docs/design.png?raw=true
+
+
+## Modules
+
+1. [Web Application](https://github.com/grytsenko/contacts/blob/master/modules/rest) - REST-services to access contacts in directory service.
+1. [Android Application](https://github.com/grytsenko/contacts/blob/master/modules/android-app) - application for synchronization contacts on Android.
