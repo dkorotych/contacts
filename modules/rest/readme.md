@@ -2,21 +2,44 @@
 
 This module provides REST services for working with contacts, that are stored in directory service.
 
-All services require basic authentication.
+All services require basic authentication. Therefore, you should use HTTPS in production to avoid security gap.
 
 ## Framework
 
 This module is based on [Spring][framework:spring] framework.
 
-## Tools
+## Getting Started
 
 To work on this project you can use: [Git][tool:git], [Maven][tool:maven], [Eclipse][tool:eclipse], [Tomcat][tool:tomcat] and [Open DJ][tool:opendj].
 
-## Getting Started
+To run application locally, follow next steps:
 
 1. Install and configure local directory service (for example, [Open DJ][tool:opendj]). File [test.ldif](https://github.com/grytsenko/contacts/blob/master/modules/rest/config/test.ldif) contains test data for directory service.
 1. Build module and deploy it on web server.
 1. Open `http://localhost:8080/contacts/search.json` in browser and enter user name and password for authentication.
+ 
+## REST API
+
+### GET search.json
+
+Returns contacts matching a query.
+By default, returns contacts of people from one location with user.
+
+##### URL
+https://.../contacts/search.json
+
+##### Parameters
+locations (optional) - list of locations which are taken into account in search.
+
+##### JSON
+
+```json
+[{"userName":"ivanov","firstName":"Ivan","lastName":"Ivanov","mail":"ivanov@test.com","phone":"3800000000","location":"Donetsk"},
+{"userName":"petrov","firstName":"Petr","lastName":"Petrov","mail":"petrov@test.ua.com","phone":"3800000001","location":"Donetsk"},
+{"userName":"kuznetsov","firstName":"Kuzma","lastName":"Kuznetsov","mail":"kuznetsov@test.com","phone":"3800000002","location":"Donetsk"},
+{"userName":"popov","firstName":"Pavel","lastName":"Popov","mail":"popov@test.com","phone":"3800000003","location":"Donetsk"},
+{"userName":"grytsenko","firstName":"Anton","lastName":"Grytsenko","mail":"grytsenko@test.com","phone":"3800000004","location":"Donetsk"}]
+```
 
 [framework:spring]: http://www.springsource.org/
 
