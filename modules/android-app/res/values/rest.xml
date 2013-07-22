@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="restBase">https://office-tools.donetsk.exadel.com</string>
+    <string name="restBase">http://10.0.2.2:8080</string>
     <string name="restSearchContacts">contacts/search.json</string>
 
 </resources>
