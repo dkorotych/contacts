@@ -1,9 +1,12 @@
 ## Summary
 
-This module is based on [Spring][framework:spring] framework.
-It provides REST services for working with contacts, that are stored in directory service.
+This module provides REST services for working with contacts, that are stored in directory service.
 
 All services require basic authentication.
+
+## Framework
+
+This module is based on [Spring][framework:spring] framework.
 
 ## Tools
 
