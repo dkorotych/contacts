@@ -12,10 +12,14 @@ public class SyncContactsService extends Service {
     private SyncContactsAdapter adapter;
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+
+        adapter = new SyncContactsAdapter(this, true);
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
-        if (adapter == null) {
-            adapter = new SyncContactsAdapter(this, true);
-        }
         return adapter.getSyncAdapterBinder();
     }
 

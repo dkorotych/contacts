@@ -12,10 +12,14 @@ public class AddAccountService extends Service {
     private AccountAutheticator autheticator;
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+
+        autheticator = new AccountAutheticator(this);
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
-        if (autheticator == null) {
-            autheticator = new AccountAutheticator(this);
-        }
         return autheticator.getIBinder();
     }
 
