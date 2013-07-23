@@ -2,18 +2,18 @@
 <resources>
 
     <string name="appName">Corporate Contacts</string>
-    <string name="accountName">Corporate Contacts</string>
+
     <string name="accountType">corporate.contacts</string>
 
-    <string name="hintForName">Name</string>
-    <string name="hintForPassword">Password</string>
-    <string name="actionSignIn">Sign In</string>
-
-    <string name="groupCoworkers">Coworkers</string>
+    <string name="accountNameHint">Name</string>
+    <string name="accountPasswordHint">Password</string>
+    <string name="accountSignInAction">Sign In</string>
 
     <string name="accountNameEmpty">Please enter your name.</string>
     <string name="accountPasswordEmpty">Please enter your password.</string>
     <string name="accountAlreadyExists">This name is already used.</string>
     <string name="accountInvalidCredentials">Name or password are incorrect.</string>
+
+    <string name="groupCoworkers">Coworkers</string>
 
 </resources>

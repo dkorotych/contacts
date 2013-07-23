@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="@string/hintForName"
+        android:hint="@string/accountNameHint"
         android:inputType="textNoSuggestions"
         style="@style/input"
         android:background="@drawable/input">
@@ -23,7 +23,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="@string/hintForPassword"
+        android:hint="@string/accountPasswordHint"
         android:inputType="textPassword"
         style="@style/input"
         android:background="@drawable/input">
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
-        android:text="@string/actionSignIn"
+        android:text="@string/accountSignInAction"
         android:background="@drawable/btn_primary"
         style="@style/btn_primary" />
 

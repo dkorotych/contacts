@@ -5,4 +5,4 @@
     android:accountType="@string/accountType"
     android:icon="@drawable/ic_main"
     android:smallIcon="@drawable/ic_main"
-    android:label="@string/accountName" />
+    android:label="@string/appName" />
