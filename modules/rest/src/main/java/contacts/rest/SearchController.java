@@ -1,6 +1,5 @@
 package contacts.rest;
 
-
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import contacts.model.Contact;
 import contacts.service.SearchContactsService;
 
+/**
+ * Processes requests to search contacts.
+ */
 @Controller
 @RequestMapping("/search.json")
 public class SearchController {
@@ -32,7 +34,7 @@ public class SearchController {
     SearchContactsService searchContactsService;
 
     /**
-     * Searches a contacts of people.
+     * Searches a contacts.
      * 
      * <p>
      * If locations are not defined, then location of current user will be used.
