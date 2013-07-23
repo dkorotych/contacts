@@ -8,6 +8,9 @@ import java.net.URISyntaxException;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +45,9 @@ public class SignInActivity extends AccountAuthenticatorActivity {
     private String username;
     private String password;
 
+    private SignInTask signInTask;
+    private Dialog signInDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +55,16 @@ public class SignInActivity extends AccountAuthenticatorActivity {
         setContentView(R.layout.add_account_layout);
 
         accountType = getString(R.string.accountType);
+
+        signInDialog = new AlertDialog.Builder(this)
+                .setMessage(R.string.accountAuthInProgress)
+                .setOnCancelListener(new Dialog.OnCancelListener() {
+
+                    public void onCancel(DialogInterface dialog) {
+                        signInTask.cancel(true);
+                    }
+
+                }).create();
 
         nameInput = (EditText) findViewById(R.id.username);
         passwordInput = (EditText) findViewById(R.id.password);
@@ -75,8 +91,7 @@ public class SignInActivity extends AccountAuthenticatorActivity {
          */
         username = nameInput.getText().toString();
         if (StringUtils.isNullOrEmpty(username)) {
-            Toast.makeText(this, R.string.accountNameEmpty, Toast.LENGTH_SHORT)
-                    .show();
+            showToast(R.string.accountNameEmpty);
             return;
         }
 
@@ -88,8 +103,7 @@ public class SignInActivity extends AccountAuthenticatorActivity {
         for (Account account : accounts) {
             if (username.equals(account.name)) {
                 Log.d(TAG, format("Account for {0} already exists.", username));
-                Toast.makeText(this, R.string.accountAlreadyExists,
-                        Toast.LENGTH_SHORT).show();
+                showToast(R.string.accountAlreadyExists);
                 return;
             }
         }
@@ -99,23 +113,23 @@ public class SignInActivity extends AccountAuthenticatorActivity {
          */
         password = passwordInput.getText().toString();
         if (StringUtils.isNullOrEmpty(password)) {
-            Toast.makeText(this, R.string.accountPasswordEmpty,
-                    Toast.LENGTH_SHORT).show();
+            showToast(R.string.accountPasswordEmpty);
             return;
         }
 
         /*
          * Verify name and password.
          */
-        SignInTask signInTask = new SignInTask();
+        signInTask = new SignInTask();
         signInTask.execute();
+        signInDialog.show();
     }
 
     public void onAuthCompleted(Boolean authenticated) {
+        signInDialog.dismiss();
+
         if (!authenticated) {
-            Toast.makeText(SignInActivity.this,
-                    R.string.accountInvalidCredentials, Toast.LENGTH_SHORT)
-                    .show();
+            showToast(R.string.accountAuthFailed);
             return;
         }
 
@@ -131,8 +145,7 @@ public class SignInActivity extends AccountAuthenticatorActivity {
                 null);
         if (!accountAdded) {
             Log.d(TAG, format("Account for {0} was not created.", username));
-            Toast.makeText(this, R.string.accountInvalidCredentials,
-                    Toast.LENGTH_SHORT).show();
+            showToast(R.string.accountNotAdded);
             return;
         }
 
@@ -142,6 +155,15 @@ public class SignInActivity extends AccountAuthenticatorActivity {
         setAccountAuthenticatorResult(bundle);
 
         finish();
+    }
+
+    public void onAuthCancelled() {
+        Log.d(TAG, "Authentication cancelled by user.");
+        showToast(R.string.accountAuthCancelled);
+    }
+
+    private void showToast(int messageId) {
+        Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show();
     }
 
     private class SignInTask extends AsyncTask<Void, Void, Boolean> {
@@ -171,6 +193,10 @@ public class SignInActivity extends AccountAuthenticatorActivity {
             onAuthCompleted(authenticated);
         }
 
+        @Override
+        protected void onCancelled() {
+            onAuthCancelled();
+        }
     }
 
 }

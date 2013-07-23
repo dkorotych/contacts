@@ -12,7 +12,12 @@
     <string name="accountNameEmpty">Please enter your name.</string>
     <string name="accountPasswordEmpty">Please enter your password.</string>
     <string name="accountAlreadyExists">This name is already used.</string>
-    <string name="accountInvalidCredentials">Name or password are incorrect.</string>
+    <string name="accountNotAdded">Could not add account.</string>
+
+    <string name="accountAuthInProgress">Authentication in progress&#8230;</string>
+
+    <string name="accountAuthFailed">Your name or password is not valid.</string>
+    <string name="accountAuthCancelled">Authentication is required.</string>
 
     <string name="groupCoworkers">Coworkers</string>
 
