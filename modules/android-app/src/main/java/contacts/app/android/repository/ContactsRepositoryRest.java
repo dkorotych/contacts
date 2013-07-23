@@ -47,11 +47,11 @@ public class ContactsRepositoryRest implements ContactsRepository {
 
         Log.d(TAG, format("Find by office for {0}.", username));
 
-        String data = restClient.doGet(username,
+        String content = restClient.doGet(username,
                 accountManager.getPassword(account), resolveUri(relativePath));
 
         try {
-            return parseContacts(data);
+            return parseContacts(content);
         } catch (JSONException exception) {
             throw new NetworkException("Invalid data format.", exception);
         }
@@ -60,8 +60,8 @@ public class ContactsRepositoryRest implements ContactsRepository {
     /**
      * Parses JSON and creates a list of contacts.
      */
-    private List<Contact> parseContacts(String data) throws JSONException {
-        JSONArray jsonContacts = new JSONArray(data);
+    private List<Contact> parseContacts(String content) throws JSONException {
+        JSONArray jsonContacts = new JSONArray(content);
         List<Contact> contacts = new ArrayList<Contact>();
         for (int i = 0; i < jsonContacts.length(); ++i) {
             JSONObject jsonContact = jsonContacts.getJSONObject(i);

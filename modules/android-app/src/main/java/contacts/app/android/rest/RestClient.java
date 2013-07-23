@@ -31,7 +31,7 @@ public class RestClient {
      * Sends GET request.
      * 
      * @param username
-     *            the username for basic authentication.
+     *            the name of user for basic authentication.
      * @param password
      *            the password fir basic authentication.
      * @param uri
@@ -47,8 +47,8 @@ public class RestClient {
     public String doGet(String username, String password, URI uri)
             throws AuthorizationException, NetworkException {
         HttpGet request = new HttpGet();
-        String authHeader = createAuthHeader(username, password);
-        request.setHeader(AUTHORIZATION_HEADER, authHeader);
+        request.setHeader(AUTHORIZATION_HEADER,
+                createAuthHeader(username, password));
         request.setURI(uri);
 
         Log.d(TAG, format("Send GET request to {0}.", uri.toString()));
@@ -59,7 +59,7 @@ public class RestClient {
 
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
-                throw new AuthorizationException("Authorization failed.");
+                throw new AuthorizationException("Invalid credentials.");
             }
             if (statusCode != HttpStatus.SC_OK) {
                 throw new NetworkException("Invalid status.");
@@ -68,6 +68,8 @@ public class RestClient {
             return EntityUtils.toString(response.getEntity());
         } catch (IOException exception) {
             throw new NetworkException("Connection error.", exception);
+        } finally {
+            client.getConnectionManager().shutdown();
         }
     }
 
