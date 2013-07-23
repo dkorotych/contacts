@@ -3,7 +3,7 @@ package contacts.app.android.repository;
 /**
  * Thrown if data could not be received from repository.
  */
-public class NetworkException extends RepositoryException {
+public class NetworkException extends Exception {
 
     private static final long serialVersionUID = -2211631091480965598L;
 
