@@ -13,7 +13,7 @@ It consists of two main parts.
 The first part is a web application that allows access to directory service through REST.
 The second part is a native application for phone, that uses web application to access information about contacts.
 
-[image:design]: https://github.com/grytsenko/contacts/blob/master/docs/design.png?raw=true
+[image:design]: https://github.com/grytsenko/contacts/blob/master/resources/images/design.png?raw=true
 
 ## Modules
 
