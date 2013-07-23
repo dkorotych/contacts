@@ -8,17 +8,17 @@ import android.util.Log;
 /**
  * Service for adding of new user accounts.
  */
-public class AddAccountService extends Service {
+public class SignInService extends Service {
 
-    private static final String TAG = AddAccountService.class.getName();
+    private static final String TAG = SignInService.class.getName();
 
-    private AccountAutheticator autheticator;
+    private BasicAutheticator autheticator;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        autheticator = new AccountAutheticator(this);
+        autheticator = new BasicAutheticator(this);
 
         Log.d(TAG, "Service created.");
     }

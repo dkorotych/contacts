@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="restBase">http://10.0.2.2:8080</string>
-    <string name="restSearchContacts">contacts/search.json</string>
+    <string name="restScheme">http</string>
+    <string name="restAuthority">10.0.2.2:8080</string>
+    <string name="restPathMyContact">/contacts/my.json</string>
+    <string name="restPathSearchContacts">/contacts/search.json</string>
 
 </resources>

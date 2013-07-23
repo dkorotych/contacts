@@ -10,11 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class AccountAutheticator extends AbstractAccountAuthenticator {
+public class BasicAutheticator extends AbstractAccountAuthenticator {
 
     private Context context;
 
-    public AccountAutheticator(Context context) {
+    public BasicAutheticator(Context context) {
         super(context);
 
         this.context = context;
@@ -25,7 +25,7 @@ public class AccountAutheticator extends AbstractAccountAuthenticator {
             String accountType, String authTokenType,
             String[] requiredFeatures, Bundle options)
             throws NetworkErrorException {
-        Intent intent = new Intent(context, AddAccountActivity.class);
+        Intent intent = new Intent(context, SignInActivity.class);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 
         Bundle bundle = new Bundle();

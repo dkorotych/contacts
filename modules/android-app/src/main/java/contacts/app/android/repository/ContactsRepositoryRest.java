@@ -43,12 +43,12 @@ public class ContactsRepositoryRest implements ContactsRepository {
     public List<Contact> findByOffice(Account account)
             throws AuthorizationException, NetworkException {
         String username = account.name;
-        String relativePath = context.getString(R.string.restSearchContacts);
 
         Log.d(TAG, format("Find by office for {0}.", username));
 
+        URI uri = resolveUri(context.getString(R.string.restPathSearchContacts));
         String content = restClient.doGet(username,
-                accountManager.getPassword(account), resolveUri(relativePath));
+                accountManager.getPassword(account), uri);
 
         try {
             return parseContacts(content);
@@ -70,21 +70,10 @@ public class ContactsRepositoryRest implements ContactsRepository {
         return contacts;
     }
 
-    /**
-     * Resolves URI of REST service.
-     * 
-     * @param relativePath
-     *            the relative path for REST-service.
-     * 
-     * @return the URI to access REST-service.
-     * 
-     * @throws RepositoryException
-     *             URI could not be resolved.
-     */
-    private URI resolveUri(String relativePath) throws NetworkException {
+    private URI resolveUri(String path) throws NetworkException {
         try {
-            URI base = new URI(context.getString(R.string.restBase));
-            return base.resolve(relativePath);
+            return new URI(context.getString(R.string.restScheme),
+                    context.getString(R.string.restAuthority), path, null, null);
         } catch (URISyntaxException exception) {
             throw new NetworkException("Invalid URI.", exception);
         }
