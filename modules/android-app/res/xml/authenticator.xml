@@ -3,6 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:accountType="@string/accountType"
-    android:icon="@drawable/icon"
-    android:smallIcon="@drawable/icon"
+    android:icon="@drawable/ic_main"
+    android:smallIcon="@drawable/ic_main"
     android:label="@string/accountName" />
