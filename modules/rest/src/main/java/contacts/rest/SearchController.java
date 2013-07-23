@@ -24,7 +24,6 @@ import contacts.service.SearchContactsService;
  * Processes requests to search contacts.
  */
 @Controller
-@RequestMapping("/search.json")
 public class SearchController {
 
     private static final Logger LOGGER = LoggerFactory
@@ -34,12 +33,25 @@ public class SearchController {
     SearchContactsService searchContactsService;
 
     /**
+     * Finds contact of current user.
+     */
+    @RequestMapping(value = "my", method = RequestMethod.GET)
+    @ResponseBody
+    public Contact search(Principal principal) {
+        String userName = principal.getName();
+
+        LOGGER.debug("Search contact of {}.", userName);
+
+        return searchContactsService.findByUserName(userName);
+    }
+
+    /**
      * Searches a contacts.
      * 
      * <p>
      * If locations are not defined, then location of current user will be used.
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "search", method = RequestMethod.GET)
     @ResponseBody
     public List<Contact> search(
             Principal principal,
