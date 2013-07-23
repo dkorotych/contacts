@@ -1,4 +1,4 @@
-package contacts.app.android.repository;
+package contacts.app.android.rest;
 
 /**
  * Thrown if data could not be received from repository.

@@ -26,10 +26,10 @@ import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 import contacts.app.android.R;
 import contacts.app.android.model.Contact;
-import contacts.app.android.repository.AuthorizationException;
 import contacts.app.android.repository.ContactsRepository;
 import contacts.app.android.repository.ContactsRepositoryRest;
-import contacts.app.android.repository.NetworkException;
+import contacts.app.android.rest.AuthorizationException;
+import contacts.app.android.rest.NetworkException;
 
 /**
  * Synchronizes contacts.

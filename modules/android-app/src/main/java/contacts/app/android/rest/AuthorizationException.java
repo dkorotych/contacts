@@ -1,4 +1,4 @@
-package contacts.app.android.repository;
+package contacts.app.android.rest;
 
 /**
  * Thrown if user is not authorized to use repository.
