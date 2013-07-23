@@ -13,6 +13,7 @@ public interface ContactsRepository {
     /**
      * Finds contacts of people from the same office with user.
      */
-    List<Contact> findByOffice(Account account) throws RepositoryException;
+    List<Contact> findByOffice(Account account) throws AuthorizationException,
+            NetworkException;
 
 }

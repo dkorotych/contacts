@@ -26,9 +26,10 @@ import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 import contacts.app.android.R;
 import contacts.app.android.model.Contact;
+import contacts.app.android.repository.AuthorizationException;
 import contacts.app.android.repository.ContactsRepository;
 import contacts.app.android.repository.ContactsRepositoryRest;
-import contacts.app.android.repository.RepositoryException;
+import contacts.app.android.repository.NetworkException;
 
 /**
  * Synchronizes contacts.
@@ -73,10 +74,14 @@ public class SyncContactsAdapter extends AbstractThreadedSyncAdapter {
             }
 
             addContacts(account, groupId, contacts);
-        } catch (RepositoryException exception) {
-            Log.e(TAG, "Repository is not accessible.", exception);
         } catch (SyncException exception) {
             Log.e(TAG, "Sync could not be completed.", exception);
+            return;
+        } catch (AuthorizationException exception) {
+            Log.e(TAG, "Authorization failed.", exception);
+        } catch (NetworkException exception) {
+            Log.e(TAG, "Repository is not accessible.", exception);
+            return;
         }
 
         Log.d(TAG, "Sync finished.");

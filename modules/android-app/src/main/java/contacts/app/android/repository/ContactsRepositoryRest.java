@@ -2,12 +2,14 @@ package contacts.app.android.repository;
 
 import static java.text.MessageFormat.format;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -40,14 +42,14 @@ public class ContactsRepositoryRest implements ContactsRepository {
     }
 
     public List<Contact> findByOffice(Account account)
-            throws RepositoryException {
+            throws AuthorizationException, NetworkException {
         String searchPath = context.getString(R.string.restSearchContacts);
         String data = doGet(account, searchPath);
 
         try {
             return parseContacts(data);
         } catch (JSONException exception) {
-            throw new RepositoryException("Data is invalid.", exception);
+            throw new NetworkException("Invalid data format.", exception);
         }
     }
 
@@ -78,7 +80,7 @@ public class ContactsRepositoryRest implements ContactsRepository {
      *             the data could not be retrieved from REST-service.
      */
     private String doGet(Account account, String relativePath)
-            throws RepositoryException {
+            throws AuthorizationException, NetworkException {
         HttpGet request = new HttpGet();
         String authHeader = createAuthHeader(account);
         request.setHeader(AUTHORIZATION_HEADER, authHeader);
@@ -90,9 +92,18 @@ public class ContactsRepositoryRest implements ContactsRepository {
         HttpClient client = new DefaultHttpClient();
         try {
             HttpResponse response = client.execute(request);
+
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
+                throw new AuthorizationException("Authorization failed.");
+            }
+            if (statusCode != HttpStatus.SC_OK) {
+                throw new NetworkException("Invalid status.");
+            }
+
             return EntityUtils.toString(response.getEntity());
-        } catch (Exception exception) {
-            throw new RepositoryException("Data is not accessible.", exception);
+        } catch (IOException exception) {
+            throw new NetworkException("Connection error.", exception);
         }
     }
 
@@ -107,12 +118,12 @@ public class ContactsRepositoryRest implements ContactsRepository {
      * @throws RepositoryException
      *             URI could not be resolved.
      */
-    private URI resolveUri(String relativePath) throws RepositoryException {
+    private URI resolveUri(String relativePath) throws NetworkException {
         try {
             URI base = new URI(context.getString(R.string.restBase));
             return base.resolve(relativePath);
         } catch (URISyntaxException exception) {
-            throw new RepositoryException("URI is invalid.", exception);
+            throw new NetworkException("Invalid URI.", exception);
         }
     }
 
