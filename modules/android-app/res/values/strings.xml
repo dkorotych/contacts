@@ -7,7 +7,7 @@
 
     <string name="accountNameHint">Name</string>
     <string name="accountPasswordHint">Password</string>
-    <string name="accountSignInAction">Sign In</string>
+    <string name="accountSignInAction">Sign in</string>
 
     <string name="accountNameEmpty">Please enter your name.</string>
     <string name="accountPasswordEmpty">Please enter your password.</string>
