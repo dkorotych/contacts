@@ -134,6 +134,11 @@ public class SignInActivity extends AccountAuthenticatorActivity {
         }
 
         createAccount();
+
+        username = null;
+        password = null;
+
+        finish();
     }
 
     private void createAccount() {
@@ -153,8 +158,6 @@ public class SignInActivity extends AccountAuthenticatorActivity {
         bundle.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
         bundle.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
         setAccountAuthenticatorResult(bundle);
-
-        finish();
     }
 
     public void onAuthCancelled() {
