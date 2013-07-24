@@ -38,7 +38,6 @@ public class SignInActivity extends AccountAuthenticatorActivity {
 
     private EditText nameInput;
     private EditText passwordInput;
-    private Button signInButton;
 
     private String accountType;
 
@@ -69,11 +68,11 @@ public class SignInActivity extends AccountAuthenticatorActivity {
         nameInput = (EditText) findViewById(R.id.username);
         passwordInput = (EditText) findViewById(R.id.password);
 
-        signInButton = (Button) findViewById(R.id.signIn);
+        Button signInButton = (Button) findViewById(R.id.signIn);
         signInButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View view) {
-                onSignIn(view);
+                onSignIn();
             }
 
         });
@@ -85,7 +84,7 @@ public class SignInActivity extends AccountAuthenticatorActivity {
      * <p>
      * Accounts are differ by user name.
      */
-    private void onSignIn(View view) {
+    private void onSignIn() {
         /*
          * Checks that user has entered name.
          */
