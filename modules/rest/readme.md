@@ -20,16 +20,23 @@ To run application locally, follow next steps:
  
 ## REST API
 
+### GET my.json
+
+Returns contact of current user.
+
+##### JSON
+
+```json
+{"userName":"grytsenko","firstName":"Anton","lastName":"Grytsenko","mail":"grytsenko@test.com","phone":"3800000004","location":"Donetsk"}
+```
+
 ### GET search.json
 
-Returns contacts matching a query.
-By default, returns contacts of people from one location with user.
-
-##### URL
-https://.../contacts/search.json
+Returns contacts of people from certain location.
+By default, returns contacts of people from one location with current user.
 
 ##### Parameters
-locations (optional) - list of locations which are taken into account in search.
+locations (optional) - list of locations.
 
 ##### JSON
 
