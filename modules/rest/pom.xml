@@ -2,50 +2,19 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>contacts</groupId>
+    <parent>
+        <groupId>contacts</groupId>
+        <artifactId>contacts-parent</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
     <artifactId>contacts-rest</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <name>contacts-rest</name>
     <description>REST API for corporate contacts.</description>
-    <url>https://github.com/grytsenko/contacts</url>
-    <inceptionYear>2013</inceptionYear>
-
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <url>https://github.com/grytsenko/contacts</url>
-        <connection>scm:git:https://github.com/grytsenko/contacts.git</connection>
-        <developerConnection>scm:git:https://github.com/grytsenko/contacts.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-
-    <issueManagement>
-        <system>GitHub Issues</system>
-        <url>http://github.com/grytsenko/contacts/issues</url>
-    </issueManagement>
-
-    <developers>
-        <developer>
-            <id>grytsenko</id>
-            <name>Anthony Grytsenko</name>
-            <email>anthony.grytsenko@gmail.com</email>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
-    </developers>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <!-- Web -->
         <spring.version>3.1.0.RELEASE</spring.version>
         <javax.servlet.version>2.5</javax.servlet.version>
@@ -92,16 +61,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.4.1</version>
-                <configuration>
-                    <preparationGoals>clean verify</preparationGoals>
-                    <goals>package</goals>
-                </configuration>
             </plugin>
         </plugins>
     </build>
