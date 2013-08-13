@@ -1,83 +1,73 @@
 package contacts.app.android.rest;
 
-import static java.text.MessageFormat.format;
-
-import java.io.IOException;
-import java.net.URI;
-
-import org.apache.http.HttpResponse;
+import contacts.util.JsonUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.util.Assert;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
-import android.util.Base64;
-import android.util.Log;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Client for REST-services.
  */
 public class RestClient {
-
-    private static final String TAG = RestClient.class.getName();
-
-    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
 
     public RestClient() {
     }
 
     /**
-     * Sends GET request.
-     * 
-     * @param username
-     *            the name of user for basic authentication.
-     * @param password
-     *            the password fir basic authentication.
-     * @param uri
-     *            the target URI.
-     * 
-     * @return the retrieved data.
-     * 
-     * @throws NetworkException
-     *             request could not be fulfilled.
-     * @throws AuthorizationException
-     *             user credentials are invalid.
+     * Set the message body converters to use. These converters are used to convert from and to HTTP requests and
+     * responses.
      */
-    public String doGet(String username, String password, URI uri)
+    public void setMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
+        Assert.notEmpty(messageConverters, "'messageConverters' must not be empty");
+        this.messageConverters = messageConverters;
+    }
+
+    /**
+     * Sends GET request.
+     *
+     * @param username the name of user for basic authentication.
+     * @param password the password fir basic authentication.
+     * @param uri      the target URI.
+     * @return the retrieved data.
+     * @throws NetworkException       request could not be fulfilled.
+     * @throws AuthorizationException user credentials are invalid.
+     */
+    public <Type> Type doGet(String username, String password, URI uri, Class<Type> returnValueClass)
             throws AuthorizationException, NetworkException {
-        HttpGet request = new HttpGet();
-        request.setHeader(AUTHORIZATION_HEADER,
-                createAuthHeader(username, password));
-        request.setURI(uri);
+        Type returnValue = null;
 
-        Log.d(TAG, format("Send GET request to {0}.", uri.toString()));
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setAccept(Collections.singletonList(JsonUtils.APPLICATION_JSON_UTF8));
+        requestHeaders.setAcceptEncoding(ContentCodingType.GZIP);
+        requestHeaders.setAuthorization(new HttpBasicAuthentication(username, password));
+        HttpEntity<?> requestEntity = new HttpEntity<>(requestHeaders);
 
-        HttpClient client = new DefaultHttpClient();
+        RestTemplate restTemplate = new RestTemplate(true);
+        restTemplate.getMessageConverters().addAll(messageConverters);
         try {
-            HttpResponse response = client.execute(request);
-
-            int statusCode = response.getStatusLine().getStatusCode();
+            ResponseEntity<Type> response = restTemplate.exchange(uri, HttpMethod.GET, requestEntity, returnValueClass);
+            int statusCode = response.getStatusCode().value();
             if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
                 throw new AuthorizationException("Invalid credentials.");
             }
             if (statusCode != HttpStatus.SC_OK) {
                 throw new NetworkException("Invalid status.");
             }
-
-            return EntityUtils.toString(response.getEntity());
-        } catch (IOException exception) {
+            if (response.hasBody()) {
+                returnValue = returnValueClass.cast(response.getBody());
+            }
+        } catch (RestClientException exception) {
             throw new NetworkException("Connection error.", exception);
-        } finally {
-            client.getConnectionManager().shutdown();
         }
+        return returnValue;
     }
-
-    private static String createAuthHeader(String username, String password) {
-        String credentials = username + ":" + password;
-        String base64 = new String(Base64.encode(credentials.getBytes(),
-                Base64.NO_WRAP));
-        return "Basic " + base64;
-    }
-
 }

@@ -20,10 +20,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import contacts.app.android.R;
+import contacts.app.android.model.Contact;
 import contacts.app.android.rest.AuthorizationException;
 import contacts.app.android.rest.NetworkException;
 import contacts.app.android.rest.RestClient;
-import contacts.app.android.util.StringUtils;
+import contacts.util.StringUtils;
 
 /**
  * Allows user to sign in.
@@ -177,7 +178,7 @@ public class SignInActivity extends AccountAuthenticatorActivity {
                 URI uri = new URI(getString(R.string.restScheme),
                         getString(R.string.restAuthority),
                         getString(R.string.restPathMyContact), null, null);
-                restClient.doGet(username, password, uri);
+                restClient.doGet(username, password, uri, Contact.class);
                 return true;
             } catch (AuthorizationException exception) {
                 Log.d(TAG, "Invalid credentials.", exception);
